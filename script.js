@@ -1,47 +1,27 @@
-document.addEventListener("DOMContentLoaded", function () {
-    let display = document.getElementById('display');
+const display = document.getElementById('display');
+const buttons = document.querySelectorAll('button');
 
-    // Function to update the display
-    function updateDisplay(value) {
-        display.value = value;
-    }
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const buttonText = button.textContent;
+        const displayValue = display.value;
 
-    // Function to handle button clicks
-    function handleButtonClick(e) {
-        const value = e.target.innerText;
-        console.log("Button clicked:", value);  // Debugging line
-
-        if (value === "C") {
-            // Clear the display
-            updateDisplay("");
-        } else if (value === "←") {
-            // Remove the last character
-            updateDisplay(display.value.slice(0, -1));
-        } else if (value === "=") {
-            // Evaluate the expression
-            try {
-                let result = eval(display.value);
-                
-                // Handle edge cases like Infinity, -Infinity, and NaN
-                if (result === Infinity || result === -Infinity || isNaN(result)) {
-                    throw new Error('Invalid result');
+        switch (buttonText) {
+            case 'C':
+                display.value = '';
+                break;
+            case '=':
+                try {
+                    display.value = eval(displayValue);
+                } catch (error) {
+                    display.value = 'Error';
                 }
-                
-                // Update the display with the result
-                updateDisplay(result);
-            } catch (error) {
-                // If there's an error (like syntax error or invalid calculation), show "Error"
-                updateDisplay("Error");
-            }
-        } else {
-            // Append the button value to the display
-            updateDisplay(display.value + value);
+                break;
+            case '←':
+                display.value = displayValue.slice(0, -1);
+                break;
+            default:
+                display.value += buttonText;
         }
-    }
-
-    // Add event listeners to all buttons
-    const buttons = document.querySelectorAll('.buttons button');
-    buttons.forEach(button => {
-        button.addEventListener('click', handleButtonClick);
     });
 });
